@@ -1,20 +1,28 @@
 module c2m_io
 
 use types
-use c2m_parameters
 
 implicit none
 
+private
+public :: read_parameters
+
+character(len=25), parameter :: f_name = 'tpe218pwanew.dat' !< file nane subfix
 
 contains
 
 subroutine read_parameters(param)
     implicit none
-    real(dp), intent(out) :: param(:,:)
+    real(dp), intent(out) :: param(:,:) !< array to be filled with the potential parameters in partial wave basis
 
     integer            :: unit, ierr,readerr,i_waves,i_lambdas
     character(len=128) :: filename
     logical            :: exists
+    integer            :: param_shape(1:2),n_lambdas,n_waves
+
+    param_shape = shape(param)
+    n_lambdas = param_shape(1)
+    n_waves = param_shape(2)
 
     filename = 'BestLambdas'//f_name
     inquire(file=trim(filename), exist=exists)

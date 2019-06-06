@@ -1,6 +1,6 @@
 module c2m_transform
-use types
-use special
+use types, only: dp
+use special, only: spherical_bessel_jn
 use constants, only: pi
 implicit none
 private

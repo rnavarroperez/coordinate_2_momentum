@@ -1,15 +1,81 @@
 module c2m_io
 
-use types
-use c2m_transform
+use types, only: dp
+use c2m_transform, only: delta_shell_2_momentum
 implicit none
 
 private
-public :: read_parameters, write_momentum_dependence
+public :: read_parameters, write_momentum_dependence, read_mc_samples
 
 character(len=25), parameter :: f_name = 'tpe218pwanew.dat' !< file nane subfix
 
 contains
+
+subroutine read_mc_samples(parameters,flags,samples)
+    implicit none
+    real(dp), intent(in) :: parameters(:,:)
+    logical, intent(in) :: flags(:,:)
+    real(dp), intent(out) :: samples(:,:,:)
+
+    character(len=128) :: filename
+    integer :: samples_shape(1:3), n_lambdas, n_waves, n_samples !array sizes
+    integer :: unit, ierr ! file manipulation
+    logical :: exists !file manipulation
+    integer :: n_active 
+    real(dp), allocatable :: mc_lambdas(:)
+    integer :: id, pp_data, np_data
+    real(dp) :: chi2_pp, chi2_np
+
+    integer :: is,il,iw,iac
+    
+
+    samples_shape = shape(samples)
+    n_lambdas = samples_shape(1)
+    n_waves = samples_shape(2)
+    n_samples = samples_shape(3)
+
+    if(any(shape(parameters).ne.shape(flags))) then
+        print*, 'Parameters and flags have inconsistent shapes in read_mc_samples'
+        stop
+    else if ( any( samples_shape(1:2) .ne. shape(flags)) ) then
+        print*, 'Samples and flags have inconsistent shapes in read_mc_samples'
+        stop        
+    endif
+
+    samples = 0._dp
+
+    n_active = count(flags)
+    allocate(mc_lambdas(1:n_active))
+    
+    filename = 'mc_lambdas_fixedZ_0001_1000'//f_name
+    inquire(file=trim(filename), exist=exists)
+    if (exists) then
+        open(newunit = unit, file=trim(filename), action="read", iostat=ierr)
+        if (ierr .eq. 0) then
+            read(unit,*) !skipping first line (this contains the central values in the mc sample)
+            do is=1,n_samples
+                read(unit,*) id,pp_data,np_data,chi2_pp,chi2_np,mc_lambdas(:)
+                iac = 0
+                do iw=1,n_waves
+                    do il=1,n_lambdas
+                        if (flags(il,iw)) then
+                            iac = iac + 1
+                            samples(il,iw,is) = mc_lambdas(iac)
+                        endif
+                    enddo
+                enddo
+            enddo
+        else
+            print*, "Error ", ierr ," attempting to open file ", trim(filename)
+            stop
+        endif
+        close(unit)
+    else
+        print*, "Error -- cannot find file: ", trim(filename)
+        stop
+    endif
+
+end subroutine read_mc_samples
 
 subroutine read_parameters(param)
     implicit none

@@ -3,7 +3,7 @@ module special
 ! Special functions:
 ! This module offers some special functions such as
 !- spherical Bessel functions
-use types
+use types, only: dp
 implicit none
 
 private

@@ -1,12 +1,30 @@
 module c2m_basis
-use types
+use types, only: dp
 use constants, only: hbar_c_MeV_fm, proton_mass_MeV
 implicit none
 
 private
-public :: partial_waves_2_operators
+public :: partial_waves_2_operators, set_fit_flags
 
 contains
+
+subroutine set_fit_flags(pw_param,flags)
+    implicit none
+    real(dp), intent(in) :: pw_param(:,:) !< array containing the potential parameters in partial wave basis (in units of fm^{-1})
+    logical, intent(out) :: flags(:,:) !< array containing logial flags to indicate which parameters were fitted
+
+    if(any(shape(pw_param).ne.shape(flags))) then
+        print*, 'Inconsistent shapes in set_fit_flags'
+        stop
+    endif
+
+    where (pw_param.eq.0._dp)
+        flags = .false.
+    else where
+        flags = .true.
+    end where
+    
+end subroutine set_fit_flags
 
 subroutine partial_waves_2_operators(pw_param,oper_param)
     implicit none

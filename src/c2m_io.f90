@@ -88,12 +88,6 @@ subroutine write_momentum_dependence(oper_parameters,dr)
         stop
     endif
     close(unit)
-    ! integer :: oper_parameters_shape(1:2), n_lambdas
-
-    ! oper_parameters_shape = shape(oper_parameters)
-    ! n_lambdas = oper_parameters_shape(1)
-
-
     
 end subroutine write_momentum_dependence
     

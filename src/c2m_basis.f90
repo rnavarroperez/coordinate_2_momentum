@@ -1,5 +1,6 @@
 module c2m_basis
 use types
+use constants, only: hbar_c_MeV_fm, proton_mass_MeV
 implicit none
 
 private
@@ -9,8 +10,8 @@ contains
 
 subroutine partial_waves_2_operators(pw_param,oper_param)
     implicit none
-    real(dp), intent(in)  :: pw_param(:,:)   !< array containing the potential parameters in partial wave basis
-    real(dp), intent(out) :: oper_param(:,:) !< array containing the potential parameters in operator basis
+    real(dp), intent(in)  :: pw_param(:,:)   !< array containing the potential parameters in partial wave basis (in units of fm^{-1})
+    real(dp), intent(out) :: oper_param(:,:) !< array containing the potential parameters in operator basis (return in units of MeV*fm)
 
     real(dp), allocatable, dimension(:) :: l_1s0np, l_1s0pp, l_3p0,    &
     & l_1p1, l_3p1, l_3s1, l_ep1, l_3d1, l_1d2, l_3d2, l_3p2, l_ep2,   &
@@ -133,8 +134,10 @@ subroutine partial_waves_2_operators(pw_param,oper_param)
 
     oper_param(:,16) = -oper_param(:,15)                                !O_sigma_T
     oper_param(:,17:19) = 0._dp                                         !O_t_T, O_tau_z, O_sigma_tau_z
-    oper_param(:,20) = -oper_param(:,15)/6._dp                              !O_l2_T
-    oper_param(:,21) = -oper_param(:,20)                              !O_l2_sigma_T
+    oper_param(:,20) = -oper_param(:,15)/6._dp                          !O_l2_T
+    oper_param(:,21) = -oper_param(:,20)                                !O_l2_sigma_T
+
+    oper_param = oper_param/proton_mass_MeV*(hbar_c_MeV_fm**2)          !Returned in units of MeV*fm
 end subroutine partial_waves_2_operators
 
 subroutine partial_wave_decomp(oper_param,s,t,j,l,lp,tz1,tz2,lambdas)

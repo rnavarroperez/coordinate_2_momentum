@@ -1,9 +1,8 @@
 program coordinate_2_momentum    
 
 use types, only: dp
-use c2m_io, only: read_parameters, read_mc_samples
+use c2m_io, only: read_parameters, read_mc_samples, write_momentum_dependence
 use c2m_basis, only: set_fit_flags
-use c2m_montecarlo
 
 implicit none
 
@@ -20,6 +19,6 @@ logical :: fit_flags(1:n_lambdas,1:n_waves)
 call read_parameters(pw_parameters)
 call set_fit_flags(pw_parameters,fit_flags)
 call read_mc_samples(pw_parameters,fit_flags,pw_samples)
-call mc_momentum_dependence(pw_samples,delta_r)
+call write_momentum_dependence(pw_samples,delta_r)
     
 end program coordinate_2_momentum

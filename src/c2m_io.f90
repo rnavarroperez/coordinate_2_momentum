@@ -2,6 +2,7 @@ module c2m_io
 
 use types, only: dp
 use c2m_transform, only: delta_shell_2_momentum
+use c2m_montecarlo, only: mc_momentum_dependence
 implicit none
 
 private
@@ -117,34 +118,24 @@ subroutine read_parameters(param)
 
 end subroutine read_parameters
 
-subroutine write_momentum_dependence(oper_parameters,dr)
+subroutine write_momentum_dependence(param_samples,dr)
     implicit none
-    real(dp), intent(in) :: oper_parameters(:,:), dr
+    real(dp), intent(in) :: param_samples(:,:,:), dr
     integer :: unit,ierr
     character(len=128) :: filename
-    real(dp) :: momentum,V_mom_14a,V_mom_14b
-    real(dp), allocatable :: lambdas14(:), radii(:)
-    integer :: oper_parameters_shape(1:2),n_lambdas,i
-
-    oper_parameters_shape = shape(oper_parameters)
-    n_lambdas = oper_parameters_shape(1)
-
-    allocate(lambdas14(1:n_lambdas),radii(1:n_lambdas))
-
-    lambdas14 = oper_parameters(:,14)
-    radii = [(i*dr,i=1,n_lambdas)]
-
+    real(dp) :: momentum, V_mean(1:2),V_variance(1:2)
+    integer :: i
+    
     filename = 'momentum_dependence'//f_name
 
     open(newunit = unit, file=trim(filename), action="write", iostat=ierr)
     if (ierr .eq. 0) then
         momentum = 1.e-1_dp
         do
-            V_mom_14a = delta_shell_2_momentum(momentum,lambdas14,radii,2,4)
-            V_mom_14b = delta_shell_2_momentum(momentum,lambdas14,radii,1,3)
-            write(unit,'(4e21.8)') momentum, V_mom_14a, V_mom_14b
+            call  mc_momentum_dependence(param_samples,momentum,dr,V_mean,V_variance)
+            write(unit,'(5e21.8)') momentum, (V_mean(i), V_variance(i),i=1,2)
             momentum = momentum + 1.e-1_dp
-            if (momentum.gt.100._dp) exit
+            if (momentum.gt.15._dp) exit
         enddo
         
     else
@@ -154,5 +145,6 @@ subroutine write_momentum_dependence(oper_parameters,dr)
     close(unit)
     
 end subroutine write_momentum_dependence
-    
+
+
 end module c2m_io

@@ -3,7 +3,7 @@ COMPILER= gfortran
 
 FLAGS = 
 
-SRC = types.f90 constants.f90 special.f90 c2m_transform.f90 c2m_io.f90 c2m_basis.f90 c2m_main.f90
+SRC = types.f90 constants.f90 statistics.f90 special.f90 c2m_transform.f90 c2m_io.f90 c2m_basis.f90 c2m_montecarlo.f90 c2m_main.f90
 
 OBJ = $(SRC:.f90=.o)
 
@@ -19,19 +19,25 @@ types.o: types.f90
 constants.o: constants.f90 types.mod
 	$(COMPILER) $(FLAGS) -c $<
 
+statistics.o: statistics.f90 types.mod
+	$(COMPILER) $(FLAGS) -c $<
+
 special.o: special.f90 types.mod
 	$(COMPILER) $(FLAGS) -c $<
 
-c2m_transform.o: c2m_transform.f90 types.mod special.mod
+c2m_transform.o: c2m_transform.f90 types.mod special.mod constants.mod
 	$(COMPILER) $(FLAGS) -c $<
 
 c2m_io.o: c2m_io.f90 types.mod c2m_transform.mod
 	$(COMPILER) $(FLAGS) -c $<
 
-c2m_basis.o: c2m_basis.f90 types.mod 
+c2m_basis.o: c2m_basis.f90 types.mod constants.mod
 	$(COMPILER) $(FLAGS) -c $<
 
-c2m_main.o: c2m_main.f90 types.mod c2m_io.mod c2m_basis.mod
+c2m_montecarlo.o: c2m_montecarlo.f90 types.mod c2m_basis.mod c2m_transform.mod statistics.mod
+	$(COMPILER) $(FLAGS) -c $<
+
+c2m_main.o: c2m_main.f90 types.mod c2m_io.mod c2m_basis.mod c2m_montecarlo.mod
 	$(COMPILER) $(FLAGS) -c $<
 
 clean:

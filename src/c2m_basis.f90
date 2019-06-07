@@ -4,9 +4,20 @@ use constants, only: hbar_c_MeV_fm, proton_mass_MeV
 implicit none
 
 private
-public :: partial_waves_2_operators, set_fit_flags
+public :: partial_waves_2_operators, set_fit_flags, allocate_operators
+
+integer, parameter :: n_operators = 21
 
 contains
+
+subroutine allocate_operators(n_lambdas,oper_param)
+    implicit none
+    integer, intent(in) :: n_lambdas
+    real(dp), allocatable, intent(out) :: oper_param(:,:) 
+
+    if(allocated(oper_param)) deallocate(oper_param)
+    allocate(oper_param(1:n_lambdas,1:n_operators))
+end subroutine allocate_operators
 
 subroutine set_fit_flags(pw_param,flags)
     implicit none

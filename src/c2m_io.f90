@@ -132,9 +132,7 @@ subroutine write_momentum_dependence(oper_parameters,dr)
     allocate(lambdas14(1:n_lambdas),radii(1:n_lambdas))
 
     lambdas14 = oper_parameters(:,14)
-    do i = 1,n_lambdas
-        radii(i) = i*dr
-    enddo
+    radii = [(i*dr,i=1,n_lambdas)]
 
     filename = 'momentum_dependence'//f_name
 

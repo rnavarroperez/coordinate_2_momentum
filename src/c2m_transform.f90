@@ -60,7 +60,7 @@ subroutine transform_all_oper(momentum,lambdas,radii,V_momentum)
     V_momentum(23) = delta_shell_2_momentum(momentum,lambdas(:,17),radii,2,2)
     V_momentum(24) = delta_shell_2_momentum(momentum,lambdas(:,18),radii,0,2)
 
-    V_momentum = V_momentum/(2*pi)**3
+    V_momentum = V_momentum!/(2*pi)**3
     
 end subroutine transform_all_oper
 

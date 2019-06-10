@@ -97,22 +97,6 @@ subroutine partial_waves_2_operators(pw_param,oper_param)
     oper_param(:,6) = (-sqrt(2._dp)/16._dp)*l_ep1                      &
     & + (5*sqrt(6._dp)/144._dp)*l_ep2                                   !O_t_tau
 
-    l_1s0pp = pw_param(:,1)
-    l_1s0np = l_1s0pp + pw_param(:,2)
-    l_3p0 = pw_param(:, 5)
-    l_1p1 = pw_param(:, 6)
-    l_3p1 = pw_param(:, 7)
-    l_3s1 = pw_param(:, 8)
-    l_ep1 = pw_param(:, 9)
-    l_3d1 = pw_param(:,10)
-    l_1d2 = pw_param(:,11)
-    l_3d2 = pw_param(:,12)
-    l_3p2 = pw_param(:,13)
-    l_ep2 = pw_param(:,14)
-    l_3f2 = pw_param(:,15)
-    l_1f3 = pw_param(:,16)
-    l_3d3 = pw_param(:,18)
-
     oper_param(:,7) = (-3/8._dp)*l_3p1 + (sqrt(2._dp)/56._dp)*l_ep1    &
     & + (-1/40._dp)*l_3d1 + (-1/24._dp)*l_3d2 + (3/8._dp)*l_3p2        &
     & + (sqrt(6._dp)/8._dp)*l_ep2 + (1/15._dp)*l_3d3                    !O_ls
@@ -128,19 +112,19 @@ subroutine partial_waves_2_operators(pw_param,oper_param)
     & + (-9/160._dp)*l_3p2 + (-9*sqrt(6._dp)/40._dp)*l_ep2             &
     & + (9/160._dp)*l_3f2 + (1/160._dp)*l_1f3 + (1/160._dp)*l_3d3       !O_l2
 
-    oper_param(:,10) = (1/96._dp)*l_1s0np + (1/48._dp)*l_1s0pp         &
-    & + (-3/32._dp)*l_3p0 + (1/160._dp)*l_1p1 + (3/32._dp)*l_3p1       &
-    & + (-1/96._dp)*l_3s1 + (-sqrt(2._dp)/168._dp)*l_ep1               &
-    & + (-1/480._dp)*l_3d1 + (-1/32._dp)*l_1d2 + (1/96._dp)*l_3d2      &
-    & + (-3/160._dp)*l_3p2 + (-3*sqrt(6._dp)/40._dp)*l_ep2             &
-    & + (3/160._dp)*l_3f2 + (-1/160._dp)*l_1f3 + (1/480._dp)*l_3d3      !O_l2_sigma
-
-    oper_param(:,11) = (-1/288._dp)*l_1s0np + (-1/144._dp)*l_1s0pp     &
+    oper_param(:,10) = (-1/288._dp)*l_1s0np + (-1/144._dp)*l_1s0pp     &
     & + (-3/32._dp)*l_3p0 + (1/160._dp)*l_1p1 + (3/32._dp)*l_3p1       &
     & + (1/32._dp)*l_3s1 + (sqrt(2._dp)/56._dp)*l_ep1                  &
     & + (1/160._dp)*l_3d1 + (1/96._dp)*l_1d2 + (-1/32._dp)*l_3d2       &
     & + (-3/160._dp)*l_3p2 + (-3*sqrt(6._dp)/40._dp)*l_ep2             &
     & + (3/160._dp)*l_3f2 + (-1/160._dp)*l_1f3 + (-1/160._dp)*l_3d3     !O_l2_tau
+
+    oper_param(:,11) = (1/96._dp)*l_1s0np + (1/48._dp)*l_1s0pp         &
+    & + (-3/32._dp)*l_3p0 + (1/160._dp)*l_1p1 + (3/32._dp)*l_3p1       &
+    & + (-1/96._dp)*l_3s1 + (-sqrt(2._dp)/168._dp)*l_ep1               &
+    & + (-1/480._dp)*l_3d1 + (-1/32._dp)*l_1d2 + (1/96._dp)*l_3d2      &
+    & + (-3/160._dp)*l_3p2 + (-3*sqrt(6._dp)/40._dp)*l_ep2             &
+    & + (3/160._dp)*l_3f2 + (-1/160._dp)*l_1f3 + (1/480._dp)*l_3d3      !O_l2_sigma
 
     oper_param(:,12) = (1/288._dp)*l_1s0np + (1/144._dp)*l_1s0pp       &
     & + (-1/32._dp)*l_3p0 + (-1/160._dp)*l_1p1 + (1/32._dp)*l_3p1      &
@@ -216,8 +200,8 @@ subroutine partial_wave_decomp(oper_param,s,t,j,l,lp,tz1,tz2,lambdas)
     vls = oper_param(:,7)
     vlstau = oper_param(:,8)
     vl2 = oper_param(:,9)
-    vl2sigma = oper_param(:,10)
-    vl2tau = oper_param(:,11)
+    vl2tau = oper_param(:,10)
+    vl2sigma = oper_param(:,11)
     vl2sigmatau = oper_param(:,12)
     vls2 = oper_param(:,13)
     vls2tau = oper_param(:,14)

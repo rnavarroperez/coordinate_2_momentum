@@ -1,7 +1,7 @@
 module c2m_io
 
 use types, only: dp
-use c2m_transform, only: delta_shell_2_momentum,sample_av18,transform_all_oper
+use c2m_transform, only: delta_shell_2_momentum,sample_av18,transform_all_oper,n_q_operators
 use c2m_montecarlo, only: mc_momentum_dependence
 use constants, only: pi
 implicit none
@@ -124,7 +124,7 @@ subroutine write_momentum_dependence(param_samples,dr)
     real(dp), intent(in) :: param_samples(:,:,:), dr
     integer :: unit,ierr
     character(len=128) :: filename
-    real(dp) :: momentum, V_mean(1:2),V_variance(1:2)
+    real(dp) :: momentum, V_mean(1:n_q_operators),V_variance(1:n_q_operators)
     integer :: i
     
     filename = 'momentum_dependence'//f_name
@@ -134,7 +134,7 @@ subroutine write_momentum_dependence(param_samples,dr)
         momentum = 1.e-1_dp
         do
             call  mc_momentum_dependence(param_samples,momentum,dr,V_mean,V_variance)
-            write(unit,'(5e21.8)') momentum, (V_mean(i), V_variance(i),i=1,2)
+            write(unit,'(5e21.8)') momentum, (V_mean(i), V_variance(i),i=19,20)
             momentum = momentum + 1.e-1_dp
             if (momentum.gt.15._dp) exit
         enddo
@@ -157,7 +157,6 @@ subroutine write_av18_momentum(delta_r,r_max)
     integer :: i
 
     call sample_av18(delta_r,r_max,radii,av18_lambdas)
-
     
     filename = 'av18_momentum_dependence.dat'
     open(newunit = unit, file=trim(filename), action="write", iostat=ierr)

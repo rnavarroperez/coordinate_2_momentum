@@ -5,7 +5,7 @@ use constants, only: pi
 use av18, only: av18_oper_basis, n_operators
 implicit none
 private
-public delta_shell_2_momentum,sample_av18,transform_all_oper
+public delta_shell_2_momentum,sample_av18,transform_all_oper,n_q_operators
 
 integer, parameter :: n_q_operators = 24
 

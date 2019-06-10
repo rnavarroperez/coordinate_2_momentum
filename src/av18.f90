@@ -85,8 +85,8 @@ subroutine av18_oper_basis(r,v_operator)
 
     v_operator = 0._dp
     x = mu*r
-     x0 = mu0*r
-     xc = muc*r
+    x0 = mu0*r
+    xc = muc*r
     if (r.le.small) then
         tpi=3*cpi**2*r/mu**3
         ypi0=(mpi0/mpic)**2*(mpi0/3)*cpi*r/mu0

@@ -37,7 +37,7 @@ c2m_basis.o: c2m_basis.f90 types.o constants.o
 c2m_montecarlo.o: c2m_montecarlo.f90 types.o c2m_basis.o c2m_transform.o statistics.o
 	$(COMPILER) $(FLAGS) -c $<
 
-c2m_io.o: c2m_io.f90 types.o c2m_transform.o c2m_montecarlo.o
+c2m_io.o: c2m_io.f90 types.o c2m_transform.o c2m_montecarlo.o constants.o
 	$(COMPILER) $(FLAGS) -c $<
 
 c2m_main.o: c2m_main.f90 types.o c2m_basis.o c2m_io.o

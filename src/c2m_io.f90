@@ -1,12 +1,13 @@
 module c2m_io
 
 use types, only: dp
-use c2m_transform, only: delta_shell_2_momentum
+use c2m_transform, only: delta_shell_2_momentum,sample_av18,transform_all_oper
 use c2m_montecarlo, only: mc_momentum_dependence
+use constants, only: pi
 implicit none
 
 private
-public :: read_parameters, write_momentum_dependence, read_mc_samples
+public :: read_parameters, write_momentum_dependence, read_mc_samples, write_av18_momentum
 
 character(len=25), parameter :: f_name = 'tpe218pwanew.dat' !< file nane subfix
 
@@ -143,8 +144,39 @@ subroutine write_momentum_dependence(param_samples,dr)
         stop
     endif
     close(unit)
-    
 end subroutine write_momentum_dependence
 
+subroutine write_av18_momentum(delta_r,r_max)
+    implicit none
+    real(dp), intent(in) :: delta_r,r_max
+    real(dp), allocatable :: radii(:), av18_lambdas(:,:)
+    character(len=128) :: filename
+    integer :: unit, ierr
+    real(dp) :: momentum
+    real(dp) :: Vq(1:24)
+    integer :: i
+
+    call sample_av18(delta_r,r_max,radii,av18_lambdas)
+
+    
+    filename = 'av18_momentum_dependence.dat'
+    open(newunit = unit, file=trim(filename), action="write", iostat=ierr)
+    if (ierr .eq. 0) then
+        momentum = 1.e-1_dp
+        do
+            call transform_all_oper(momentum,av18_lambdas,radii,Vq)
+            write(unit,'(25e21.8)') momentum, Vq
+            momentum = momentum + 1.e-1_dp
+            if (momentum.gt.15._dp) exit
+        enddo
+        
+    else
+        print*, "Error ", ierr ," attempting to open file ", trim(filename)
+        stop
+    endif
+    close(unit)
+
+    
+end subroutine write_av18_momentum
 
 end module c2m_io

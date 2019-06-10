@@ -5,9 +5,64 @@ use constants, only: pi
 use av18, only: av18_oper_basis, n_operators
 implicit none
 private
-public delta_shell_2_momentum
+public delta_shell_2_momentum,sample_av18,transform_all_oper
+
+integer, parameter :: n_q_operators = 24
 
 contains
+
+subroutine transform_all_oper(momentum,lambdas,radii,V_momentum)
+    implicit none
+    real(dp), intent(in) :: momentum,lambdas(:,:),radii(:)
+    real(dp), intent(out) :: V_momentum(:)
+
+    integer :: lambdas_shape(1:2)
+
+    if (size(V_momentum).ne.n_q_operators) then
+        print*, 'V_momentum is not the correct size in transform_all_oper'
+        stop
+    endif
+
+    lambdas_shape = shape(lambdas)
+
+    if (lambdas_shape(2).ne.18) then
+         print*, 'lambdas needs to have 18 operators in transform_all_oper'
+         stop
+     endif 
+
+    if (lambdas_shape(1).ne.size(radii)) then
+        print*, 'radii and lambdas(:,i) need to have same size in transform_all_oper'
+        stop
+    endif
+
+    V_momentum( 1) = delta_shell_2_momentum(momentum,lambdas(:, 1),radii,0,2)
+    V_momentum( 2) = delta_shell_2_momentum(momentum,lambdas(:, 2),radii,0,2)
+    V_momentum( 3) = delta_shell_2_momentum(momentum,lambdas(:, 3),radii,0,2)
+    V_momentum( 4) = delta_shell_2_momentum(momentum,lambdas(:, 4),radii,0,2)
+    V_momentum( 5) = delta_shell_2_momentum(momentum,lambdas(:, 5),radii,2,2)
+    V_momentum( 6) = delta_shell_2_momentum(momentum,lambdas(:, 6),radii,2,2)
+    V_momentum( 7) = delta_shell_2_momentum(momentum,lambdas(:, 7),radii,1,3)
+    V_momentum( 8) = delta_shell_2_momentum(momentum,lambdas(:, 8),radii,1,3)
+    V_momentum( 9) = delta_shell_2_momentum(momentum,lambdas(:, 9),radii,2,4)
+    V_momentum(10) = delta_shell_2_momentum(momentum,lambdas(:, 9),radii,1,3)
+    V_momentum(11) = delta_shell_2_momentum(momentum,lambdas(:,10),radii,2,4)
+    V_momentum(12) = delta_shell_2_momentum(momentum,lambdas(:,10),radii,1,3)
+    V_momentum(13) = delta_shell_2_momentum(momentum,lambdas(:,11),radii,2,4)
+    V_momentum(14) = delta_shell_2_momentum(momentum,lambdas(:,11),radii,1,3)
+    V_momentum(15) = delta_shell_2_momentum(momentum,lambdas(:,12),radii,2,4)
+    V_momentum(16) = delta_shell_2_momentum(momentum,lambdas(:,12),radii,1,3)
+    V_momentum(17) = delta_shell_2_momentum(momentum,lambdas(:,13),radii,2,4)
+    V_momentum(18) = delta_shell_2_momentum(momentum,lambdas(:,13),radii,1,3)
+    V_momentum(19) = delta_shell_2_momentum(momentum,lambdas(:,14),radii,2,4)
+    V_momentum(20) = delta_shell_2_momentum(momentum,lambdas(:,14),radii,1,3)
+    V_momentum(21) = delta_shell_2_momentum(momentum,lambdas(:,15),radii,0,2)
+    V_momentum(22) = delta_shell_2_momentum(momentum,lambdas(:,16),radii,0,2)
+    V_momentum(23) = delta_shell_2_momentum(momentum,lambdas(:,17),radii,2,2)
+    V_momentum(24) = delta_shell_2_momentum(momentum,lambdas(:,18),radii,0,2)
+
+    V_momentum = V_momentum/(2*pi)**3
+    
+end subroutine transform_all_oper
 
 subroutine sample_av18(delta_r,r_max,radii,av18_lambdas)
     implicit none
@@ -57,7 +112,7 @@ real(dp) function delta_shell_2_momentum(q,lambdas,radii,q_power,r_power) result
         r = r + spherical_bessel_jn(q_power,q*r_i)*lambda_i*r_i**r_power
     enddo
 
-    r = r*pi/q**q_power
+    r = 4*r*pi/q**q_power
 end function delta_shell_2_momentum
     
 end module c2m_transform

@@ -28,7 +28,7 @@ special.o: special.f90 types.o
 av18.o: av18.f90 types.o constants.o
 	$(COMPILER) $(FLAGS) -c $<
 
-pion_exchange.o: pion_exchange.f90 types.o constants.o
+pion_exchange.o: pion_exchange.f90 types.o constants.o special.o
 	$(COMPILER) $(FLAGS) -c $<
 
 c2m_transform.o: c2m_transform.f90 types.o special.o constants.o av18.o

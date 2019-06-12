@@ -7,9 +7,94 @@ use types, only: dp
 implicit none
 
 private
-public spherical_bessel_jn
+public spherical_bessel_jn,bessel_k0,bessel_k1,bessel_i0,bessel_i1
 
 contains
+
+real(dp) function bessel_i0(x) result(bessi0)
+    implicit none
+    real(dp), intent(in) :: x
+    real(dp), parameter, dimension(0:6) :: &
+    & p = [1._dp,3.5156229_dp,3.0899424_dp,1.2067492_dp,0.2659732_dp,0.360768e-1_dp,0.45813e-2_dp]
+    real(dp), parameter, dimension(0:8) :: &
+    & q = [0.39894228_dp,0.1328592e-1_dp,0.225319e-2_dp,-0.157565e-2_dp,0.916281e-2_dp,&
+    &      -0.2057706e-1_dp,0.2635537e-1_dp,-0.1647633e-1_dp,0.392377e-2_dp]
+    real(dp) :: y,ax
+    if (abs(x).lt.3.75_dp) then
+        y=(x/3.75_dp)**2
+        bessi0=p(0)+p(1)*y+p(2)*y**2+p(3)*y**3+p(4)*y**4+p(5)*y**5+p(6)*y**6
+    else
+       ax=abs(x)
+       y=3.75_dp/ax
+       bessi0=q(0)+q(1)*y+q(2)*y**2+q(3)*y**3+q(4)*y**4+q(5)*y**5+q(6)*y**6+q(7)*y**7+q(8)*y**8
+       bessi0=bessi0*exp(ax)/sqrt(ax)
+    endif
+end function bessel_i0
+
+
+real(dp) function bessel_i1(x) result(bessi1)
+    implicit none
+    real(dp) :: x
+    real(dp), parameter, dimension(0:6) :: &
+    & p = [0.5_dp,0.87890594_dp,0.51498869_dp,&
+    &      0.15084934_dp,0.2658733e-1_dp,0.301532e-2_dp,0.32411e-3_dp]
+    real(dp), parameter, dimension(0:8) :: &
+    & q = [0.39894228_dp,-0.3988024e-1_dp,-0.362018e-2_dp,0.163801e-2_dp&
+    &     ,-0.1031555e-1_dp,0.2282967e-1_dp,-0.2895312e-1_dp,0.1787654e-1_dp,-0.420059e-2_dp]
+    real(dp) :: y,ax
+    if (abs(x).lt.3.75_dp) then
+        y=(x/3.75_dp)**2
+        bessi1=p(0)+p(1)*y+p(2)*y**2+p(3)*y**3+p(4)*y**4+p(5)*y**5+p(6)*y**6
+        bessi1=bessi1*x
+    else
+       ax=abs(x)
+       y=3.75_dp/ax
+       bessi1=q(0)+q(1)*y+q(2)*y**2+q(3)*y**3+q(4)*y**4+q(5)*y**5+q(6)*y**6+q(7)*y**7+q(8)*y**8
+       bessi1=bessi1*exp(ax)/sqrt(ax)
+       if(x.lt.0_dp) bessi1=-bessi1
+    endif
+end function bessel_i1
+
+real(dp) function bessel_k0(x) result(bessk0)
+    implicit none
+    real(dp) :: x
+    real(dp), parameter, dimension(0:6) :: &
+    & p = [-0.57721566_dp,0.42278420_dp,&
+         0.23069756_dp,0.3488590e-1_dp,0.262698e-2_dp,0.10750e-3_dp,0.74e-5_dp]
+    real(dp), parameter, dimension(0:6) :: &
+    & q = [1.25331414_dp,-0.7832358e-1_dp,0.2189568e-1_dp,-0.1062446e-1_dp,&
+    &      0.587872e-2_dp,-0.251540e-2_dp,0.53208e-3_dp]
+    real(dp) :: y
+    if (x.lt.2) then
+        y=(x/2)**2
+        bessk0 = p(0)+p(1)*y+p(2)*y**2+p(3)*y**3+p(4)*y**4+p(5)*y**5+p(6)*y**6
+        bessk0 = bessk0-log(x/2)*bessel_i0(x) 
+    else
+        y = 2/x
+        bessk0 = q(0)+q(1)*y+q(2)*y**2+q(3)*y**3+q(4)*y**4+q(5)*y**5+q(6)*y**6
+        bessk0 = bessk0*exp(-x)/sqrt(x)
+    endif
+end function bessel_k0
+
+real(dp) function bessel_k1(x) result(bessk1)
+    real(dp) :: x
+    real(dp), parameter, dimension(0:6) :: &
+    & p = [1.0_dp,0.15443144_dp,-0.67278579_dp,&
+         -0.18156897_dp,-0.1919402e-1_dp,-0.110404e-2_dp,-0.4686e-4_dp]
+    real(dp), parameter, dimension(0:6) :: &
+    & q = [1.25331414_dp,0.23498619_dp,-0.3655620e-1_dp,0.1504268e-1_dp,&
+    &     -0.780353e-2_dp,0.325614e-2_dp,-0.68245e-3_dp]
+    real(dp) :: y
+    if (x.lt.2) then
+        y=(x/2)**2
+        bessk1 = p(0)+p(1)*y+p(2)*y**2+p(3)*y**3+p(4)*y**4+p(5)*y**5+p(6)*y**6
+        bessk1 = bessk1/x+log(x/2)*bessel_i1(x) 
+    else
+        y = 2/x
+        bessk1 = q(0)+q(1)*y+q(2)*y**2+q(3)*y**3+q(4)*y**4+q(5)*y**5+q(6)*y**6
+        bessk1 = bessk1*exp(-x)/sqrt(x)
+    endif
+end function bessel_k1
 
 real(dp) function spherical_bessel_jn(n, x) result(r)
 integer, intent(in) :: n

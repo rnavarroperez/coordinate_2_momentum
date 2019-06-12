@@ -5,7 +5,7 @@ use av18, only: n_operators
 use special, only: bessel_k0,bessel_k1
 implicit none
 private
-public v_one_pion_exch
+public v_one_pion_exch, v_two_pion_exch_nlo, v_two_pion_exch_n2lo
 real(dp), parameter :: f2pp =  0.075_dp,f2nn =  0.075_dp, f2np = -0.075_dp, f2c  =  0.075_dp
 real(dp), parameter :: hc=hbar_c_MeV_fm, mpic = pion_c_mass_MeV, mpi0=pion_0_mass_MeV, mpi=pion_mass_MeV
 real(dp), parameter :: mp=proton_mass_MeV,mn=neutron_mass_MeV

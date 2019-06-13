@@ -3,9 +3,10 @@ use types, only: dp
 use special, only: spherical_bessel_jn
 use constants, only: pi
 use av18, only: av18_oper_basis, n_operators
+use pion_exchange, only: v_one_pion_exch, v_two_pion_exch_nlo, v_two_pion_exch_n2lo
 implicit none
 private
-public delta_shell_2_momentum,sample_av18,transform_all_oper,n_q_operators
+public delta_shell_2_momentum,sample_av18,transform_all_oper,n_q_operators,n_operators,sample_pion_tail
 
 integer, parameter :: n_q_operators = 24
 
@@ -90,6 +91,43 @@ subroutine sample_av18(delta_r,r_max,radii,av18_lambdas)
     temp_array = temp_array*delta_r
     av18_lambdas = transpose(temp_array)
 end subroutine sample_av18
+
+subroutine sample_pion_tail(radii,lecs,tail)
+    implicit none
+    real(dp), intent(in) :: radii(:),lecs(:)
+    real(dp), intent(out) :: tail(:,:)
+
+    integer :: tail_shape(1:2),i,n_lambdas
+    real(dp), allocatable :: temp_array(:,:)
+    real(dp) :: v_ope(1:n_operators), v_tpe_nlo(1:n_operators), v_tpe_n2lo(1:n_operators)
+    real(dp) :: r_i, delta_r
+
+    tail_shape = shape(tail)
+    allocate(temp_array(1:tail_shape(2),1:tail_shape(1)))
+
+    if(size(radii).ne.tail_shape(1)) then
+        print*, 'incompatible sizes between radii and tail in sample_pion_tail'
+        stop
+    endif
+
+    if (tail_shape(2).ne.n_operators) then
+        print*, 'incorrect size for tail in sample_pion_tail'
+        stop
+    endif
+
+    n_lambdas = tail_shape(1)
+    do i=1,n_lambdas
+        r_i = radii(i)
+        call v_one_pion_exch(r_i,v_ope)
+        call v_two_pion_exch_nlo(r_i,v_tpe_nlo)
+        call v_two_pion_exch_n2lo(r_i,lecs,v_tpe_n2lo)
+        temp_array(:,i) = v_ope + v_tpe_nlo + v_tpe_n2lo
+    enddo
+    delta_r = radii(2) - radii(1)
+    temp_array = temp_array*delta_r
+    tail = transpose(temp_array)
+
+end subroutine sample_pion_tail
 
 real(dp) function delta_shell_2_momentum(q,lambdas,radii,q_power,r_power) result(r)
     implicit none

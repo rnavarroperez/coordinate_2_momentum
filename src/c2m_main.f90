@@ -13,7 +13,7 @@ integer, parameter :: n_samples   = 999!< number of monte carlo samples
 real(dp) :: pw_parameters(1:n_lambdas,1:n_waves)
 real(dp) :: pw_samples(1:n_lambdas,1:n_waves,1:n_samples)
 real(dp), parameter :: delta_r_ds = 0.6_dp !in fm
-real(dp), parameter :: delta_r_av18 = 1.0e-2_dp !in fm
+real(dp), parameter :: delta_r_tail = 1.0e-2_dp !in fm
 real(dp), parameter :: r_max = 20.0_dp !in fm
 
 logical :: fit_flags(1:n_lambdas,1:n_waves)
@@ -21,8 +21,8 @@ logical :: fit_flags(1:n_lambdas,1:n_waves)
 call read_parameters(pw_parameters)
 call set_fit_flags(pw_parameters,fit_flags)
 call read_mc_samples(pw_parameters,fit_flags,pw_samples)
-call write_momentum_dependence(pw_samples,delta_r_ds)
+call write_momentum_dependence(pw_samples,delta_r_ds,delta_r_tail,r_max)
 
-call write_av18_momentum(delta_r_av18,r_max)
+call write_av18_momentum(delta_r_tail,r_max)
     
 end program coordinate_2_momentum

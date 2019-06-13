@@ -119,9 +119,9 @@ subroutine read_parameters(param)
 
 end subroutine read_parameters
 
-subroutine write_momentum_dependence(param_samples,dr)
+subroutine write_momentum_dependence(param_samples,dr,dr_tail,r_max)
     implicit none
-    real(dp), intent(in) :: param_samples(:,:,:), dr
+    real(dp), intent(in) :: param_samples(:,:,:), dr, dr_tail,r_max
     integer :: unit,ierr
     character(len=128) :: filename
     real(dp) :: momentum, V_mean(1:n_q_operators),V_variance(1:n_q_operators)
@@ -133,8 +133,8 @@ subroutine write_momentum_dependence(param_samples,dr)
     if (ierr .eq. 0) then
         momentum = 1.e-1_dp
         do
-            call  mc_momentum_dependence(param_samples,momentum,dr,V_mean,V_variance)
-            write(unit,'(5e21.8)') momentum, (V_mean(i), V_variance(i),i=19,20)
+            call  mc_momentum_dependence(param_samples,momentum,dr,dr_tail,r_max,V_mean,V_variance)
+            write(unit,'(49e21.8)') momentum, (V_mean(i), V_variance(i),i=1,n_q_operators)
             momentum = momentum + 1.e-1_dp
             if (momentum.gt.15._dp) exit
         enddo

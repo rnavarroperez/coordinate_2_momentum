@@ -1,11 +1,10 @@
 module av18
 use types, only: dp 
-use constants, only: hbar_c_MeV_fm, pion_c_mass_MeV, pion_0_mass_MeV, pion_mass_MeV
+use constants, only: hc=>hbar_c_MeV_fm, mpic=>pion_c_mass_MeV, mpi0=>pion_0_mass_MeV, mpi=>pion_mass_MeV
 implicit none
 private
 public av18_oper_basis, n_operators
 
-real(dp), parameter :: hc=hbar_c_MeV_fm, mpic = pion_c_mass_MeV, mpi0=pion_0_mass_MeV, mpi=pion_mass_MeV
 integer, parameter :: n_parameters = 44
 real(dp), parameter :: f2=0.075_dp !< pion nucleon coupling constant
 real(dp), parameter, dimension(1:n_parameters) :: av18_parameters=[&

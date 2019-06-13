@@ -1,14 +1,13 @@
 module pion_exchange
 use types
-use constants, only: hbar_c_MeV_fm, pion_c_mass_MeV, pion_0_mass_MeV, pion_mass_MeV,pi,proton_mass_MeV,neutron_mass_MeV
+use constants, only: hc=>hbar_c_MeV_fm, mpic=>pion_c_mass_MeV, mpi0=>pion_0_mass_MeV, mpi=>pion_mass_MeV,&
+                    & mp=>proton_mass_MeV,mn=>neutron_mass_MeV,pi
 use av18, only: n_operators
 use special, only: bessel_k0,bessel_k1
 implicit none
 private
 public v_one_pion_exch, v_two_pion_exch_nlo, v_two_pion_exch_n2lo
 real(dp), parameter :: f2pp =  0.075_dp,f2nn =  0.075_dp, f2np = -0.075_dp, f2c  =  0.075_dp
-real(dp), parameter :: hc=hbar_c_MeV_fm, mpic = pion_c_mass_MeV, mpi0=pion_0_mass_MeV, mpi=pion_mass_MeV
-real(dp), parameter :: mp=proton_mass_MeV,mn=neutron_mass_MeV
 real(dp), parameter :: F_pi = 185._dp !< Pion decay constant, value from PhysRevLett.82.4992
 contains
 

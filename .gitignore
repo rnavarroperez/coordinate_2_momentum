@@ -3,10 +3,6 @@
 
 /src/notebooks/.ipynb_checkpoints/plot_results-checkpoint.ipynb
 
-/src/notebooks/v_momemtum_14a.pdf
-
-/src/notebooks/v_momemtum_14b.pdf
-
-/src/notebooks/.ipynb_checkpoints/plot_results-checkpoint.ipynb
+/src/notebooks/v_momemtum_*.pdf
 
 /src/av18_momentum_dependence.dat

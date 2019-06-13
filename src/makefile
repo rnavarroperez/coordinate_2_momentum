@@ -1,7 +1,7 @@
 #Compiler and library linking for local system
 COMPILER= gfortran
 
-FLAGS = -O3
+FLAGS = -O3 -fopenmp
 
 SRC = $(wildcard *.f90) 
 

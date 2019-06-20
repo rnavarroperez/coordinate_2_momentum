@@ -153,7 +153,7 @@ subroutine write_av18_momentum(delta_r,r_max)
     character(len=128) :: filename
     integer :: unit, ierr
     real(dp) :: momentum
-    real(dp) :: Vq(1:24)
+    real(dp) :: Vq(1:n_q_operators)
     integer :: i
 
     call sample_av18(delta_r,r_max,radii,av18_lambdas)

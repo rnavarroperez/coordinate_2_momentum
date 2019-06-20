@@ -8,7 +8,7 @@ implicit none
 private
 public delta_shell_2_momentum,sample_av18,transform_all_oper,n_q_operators,n_operators,sample_pion_tail
 
-integer, parameter :: n_q_operators = 24
+integer, parameter :: n_q_operators = 12
 
 contains
 
@@ -18,6 +18,9 @@ subroutine transform_all_oper(momentum,lambdas,radii,V_momentum)
     real(dp), intent(out) :: V_momentum(:)
 
     integer :: lambdas_shape(1:2)
+    real(dp) :: V_1, V_2, V_3, V_4, V_5, V_6, V_7, V_8, V_9a, V_9b, V_10a, V_10b, V_11a, &
+        & V_11b, V_12a, V_12b, V_13a, V_13b, V_14a, V_14b, V_15, V_16, V_17, V_18, &
+        & p_momentum, q_dot_p
 
     if (size(V_momentum).ne.n_q_operators) then
         print*, 'V_momentum is not the correct size in transform_all_oper'
@@ -36,32 +39,51 @@ subroutine transform_all_oper(momentum,lambdas,radii,V_momentum)
         stop
     endif
 
-    V_momentum( 1) = delta_shell_2_momentum(momentum,lambdas(:, 1),radii,0,2)
-    V_momentum( 2) = delta_shell_2_momentum(momentum,lambdas(:, 2),radii,0,2)
-    V_momentum( 3) = delta_shell_2_momentum(momentum,lambdas(:, 3),radii,0,2)
-    V_momentum( 4) = delta_shell_2_momentum(momentum,lambdas(:, 4),radii,0,2)
-    V_momentum( 5) = delta_shell_2_momentum(momentum,lambdas(:, 5),radii,2,2)
-    V_momentum( 6) = delta_shell_2_momentum(momentum,lambdas(:, 6),radii,2,2)
-    V_momentum( 7) = delta_shell_2_momentum(momentum,lambdas(:, 7),radii,1,3)
-    V_momentum( 8) = delta_shell_2_momentum(momentum,lambdas(:, 8),radii,1,3)
-    V_momentum( 9) = delta_shell_2_momentum(momentum,lambdas(:, 9),radii,2,4)
-    V_momentum(10) = delta_shell_2_momentum(momentum,lambdas(:, 9),radii,1,3)
-    V_momentum(11) = delta_shell_2_momentum(momentum,lambdas(:,10),radii,2,4)
-    V_momentum(12) = delta_shell_2_momentum(momentum,lambdas(:,10),radii,1,3)
-    V_momentum(13) = delta_shell_2_momentum(momentum,lambdas(:,11),radii,2,4)
-    V_momentum(14) = delta_shell_2_momentum(momentum,lambdas(:,11),radii,1,3)
-    V_momentum(15) = delta_shell_2_momentum(momentum,lambdas(:,12),radii,2,4)
-    V_momentum(16) = delta_shell_2_momentum(momentum,lambdas(:,12),radii,1,3)
-    V_momentum(17) = delta_shell_2_momentum(momentum,lambdas(:,13),radii,2,4)
-    V_momentum(18) = delta_shell_2_momentum(momentum,lambdas(:,13),radii,1,3)
-    V_momentum(19) = delta_shell_2_momentum(momentum,lambdas(:,14),radii,2,4)
-    V_momentum(20) = delta_shell_2_momentum(momentum,lambdas(:,14),radii,1,3)
-    V_momentum(21) = delta_shell_2_momentum(momentum,lambdas(:,15),radii,0,2)
-    V_momentum(22) = delta_shell_2_momentum(momentum,lambdas(:,16),radii,0,2)
-    V_momentum(23) = delta_shell_2_momentum(momentum,lambdas(:,17),radii,2,2)
-    V_momentum(24) = delta_shell_2_momentum(momentum,lambdas(:,18),radii,0,2)
+    p_momentum = 0._dp
+    q_dot_p = 0._dp
 
-    V_momentum = V_momentum!/(2*pi)**3
+    V_1   = delta_shell_2_momentum(momentum,lambdas(:, 1),radii,0,2)
+    V_2   = delta_shell_2_momentum(momentum,lambdas(:, 2),radii,0,2)
+    V_3   = delta_shell_2_momentum(momentum,lambdas(:, 3),radii,0,2)
+    V_4   = delta_shell_2_momentum(momentum,lambdas(:, 4),radii,0,2)
+    V_5   = delta_shell_2_momentum(momentum,lambdas(:, 5),radii,2,2)
+    V_6   = delta_shell_2_momentum(momentum,lambdas(:, 6),radii,2,2)
+    V_7   = delta_shell_2_momentum(momentum,lambdas(:, 7),radii,1,3)
+    V_8   = delta_shell_2_momentum(momentum,lambdas(:, 8),radii,1,3)
+    V_9a  = delta_shell_2_momentum(momentum,lambdas(:, 9),radii,2,4)
+    V_9b  = delta_shell_2_momentum(momentum,lambdas(:, 9),radii,1,3)
+    V_10a = delta_shell_2_momentum(momentum,lambdas(:,10),radii,2,4)
+    V_10b = delta_shell_2_momentum(momentum,lambdas(:,10),radii,1,3)
+    V_11a = delta_shell_2_momentum(momentum,lambdas(:,11),radii,2,4)
+    V_11b = delta_shell_2_momentum(momentum,lambdas(:,11),radii,1,3)
+    V_12a = delta_shell_2_momentum(momentum,lambdas(:,12),radii,2,4)
+    V_12b = delta_shell_2_momentum(momentum,lambdas(:,12),radii,1,3)
+    V_13a = delta_shell_2_momentum(momentum,lambdas(:,13),radii,2,4)
+    V_13b = delta_shell_2_momentum(momentum,lambdas(:,13),radii,1,3)
+    V_14a = delta_shell_2_momentum(momentum,lambdas(:,14),radii,2,4)
+    V_14b = delta_shell_2_momentum(momentum,lambdas(:,14),radii,1,3)
+    V_15  = delta_shell_2_momentum(momentum,lambdas(:,15),radii,0,2)
+    V_16  = delta_shell_2_momentum(momentum,lambdas(:,16),radii,0,2)
+    V_17  = delta_shell_2_momentum(momentum,lambdas(:,17),radii,2,2)
+    V_18  = delta_shell_2_momentum(momentum,lambdas(:,18),radii,0,2)
+
+    V_momentum( 1) = V_1 - (V_9a + V_10a + V_11a + V_12a + V_13a/2)*&
+        & (p_momentum**2*momentum**2 - q_dot_p**2) + (2+V_9b + V_13b)*&
+        & (p_momentum**2 - momentum**2/4)
+    V_momentum( 2) = V_2 - (V_12a + V_14a/2)*(p_momentum**2*momentum**2 - q_dot_p**2) &
+        & + (2*V_10b + V_14b)*(p_momentum**2 - momentum**2/4)
+    V_momentum( 3) = V_3 + (2*V_11b + V_13b)*p_momentum**3 &
+        & - (V_11b/2 + V_13b/4 - V_5)*momentum**2
+    V_momentum( 4) = V_4 + (2*V_12b + V_14b)*(p_momentum**2 - momentum**2/4) &
+        & + V_6*momentum**2
+    V_momentum( 5) = V_13b/8 - 3*V_5
+    V_momentum( 6) = V_14b/8 - 3*V_6
+    V_momentum( 7) = V_7
+    V_momentum( 8) = V_8
+    V_momentum( 9) = - V_13a/2
+    V_momentum(10) = - V_14a/2
+    V_momentum(11) = - V_13b/2
+    V_momentum(12) = - V_14b/2
     
 end subroutine transform_all_oper
 

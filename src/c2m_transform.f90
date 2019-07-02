@@ -6,23 +6,28 @@ use av18, only: av18_oper_basis, n_operators
 use pion_exchange, only: v_one_pion_exch, v_two_pion_exch_nlo, v_two_pion_exch_n2lo
 implicit none
 private
-public delta_shell_2_momentum,sample_av18,transform_all_oper,n_q_operators,n_operators,sample_pion_tail
+public delta_shell_2_momentum,sample_av18,transform_all_oper,n_q_operators,n_operators,sample_pion_tail,n_av18q_operators
 
 integer, parameter :: n_q_operators = 12
 integer, parameter :: n_av18q_operators = 24
 
 contains
 
-subroutine transform_all_oper(momentum,lambdas,radii,V_momentum)
+subroutine transform_all_oper(momentum,lambdas,radii,V18q,V_momentum)
     implicit none
     real(dp), intent(in) :: momentum,lambdas(:,:),radii(:)
-    real(dp), intent(out) :: V_momentum(:)
+    real(dp), intent(out) :: V18q(:), V_momentum(:)
 
     integer :: lambdas_shape(1:2)
-    real(dp) :: V18q(1:n_av18q_operators), p_momentum, q_dot_p
+    real(dp) :: p_momentum, q_dot_p
 
     if (size(V_momentum).ne.n_q_operators) then
         print*, 'V_momentum is not the correct size in transform_all_oper'
+        stop
+    endif
+
+    if (size(V18q).ne.n_av18q_operators) then
+        print*, 'V18q is not the correct size in transform_all_oper'
         stop
     endif
 

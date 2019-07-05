@@ -2,7 +2,7 @@ module c2m_montecarlo
 use types, only: dp
 use statistics, only: mean, sample_variance
 use c2m_basis, only: allocate_operators, partial_waves_2_operators
-use c2m_transform, only: delta_shell_2_momentum, transform_all_oper,n_av18_operators=>n_operators,sample_pion_tail
+use c2m_transform, only: delta_shell_2_momentum, transform_all_oper,n_av18_operators,sample_pion_tail
 implicit none
 
 private

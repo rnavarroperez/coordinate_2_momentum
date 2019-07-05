@@ -1,13 +1,14 @@
 module c2m_io
 
 use types, only: dp
-use c2m_transform, only: delta_shell_2_momentum,sample_av18,transform_all_oper,n_q_operators, n_av18q_operators
+use c2m_transform, only: delta_shell_2_momentum,sample_local_potential,transform_all_oper,n_q_operators,& 
+    & n_av18q_operators, n_av18_operators
 use c2m_montecarlo, only: mc_momentum_dependence
 use constants, only: pi
 implicit none
 
 private
-public :: read_parameters, write_momentum_dependence, read_mc_samples, write_av18_momentum
+public :: read_parameters, write_momentum_dependence, read_mc_samples, write_local_2_momentum
 
 character(len=25), parameter :: f_name = 'tpe218pwanew.dat' !< file nane subfix
 
@@ -157,9 +158,10 @@ subroutine write_momentum_dependence(param_samples,dr,dr_tail,r_max,chiral_order
     close(unit_poly)
 end subroutine write_momentum_dependence
 
-subroutine write_av18_momentum(delta_r,r_max)
+subroutine write_local_2_momentum(delta_r,r_max,potential_name)
     implicit none
     real(dp), intent(in) :: delta_r,r_max
+    character(len=*), intent(in):: potential_name
     real(dp), allocatable :: radii(:), av18_lambdas(:,:)
     character(len=128) :: filename, filename_st
     integer :: unit, ierr, unit_st,ierr_st
@@ -167,16 +169,16 @@ subroutine write_av18_momentum(delta_r,r_max)
     real(dp) :: Vq(1:n_q_operators), V_poly(1:n_av18q_operators)
     integer :: i
 
-    call sample_av18(delta_r,r_max,radii,av18_lambdas)
+    call sample_local_potential(delta_r,r_max,radii,potential_name,av18_lambdas)
     
-    filename = 'av18_momentum_dependence_poly_basis.dat'
-    filename_st = 'av18_momentum_dependence_st_basis.dat'
+    filename = trim(potential_name)//'_momentum_dependence_poly_basis.dat'
+    filename_st = trim(potential_name)//'_momentum_dependence_st_basis.dat'
     open(newunit = unit, file=trim(filename), action="write", iostat=ierr)
     open(newunit = unit_st, file=trim(filename_st), action="write", iostat=ierr_st)
     if (ierr .eq. 0 .and. ierr_st .eq. 0) then
         momentum = 1.e-1_dp
         do
-            call transform_all_oper(momentum,av18_lambdas,radii,V_poly,Vq)
+            call transform_all_oper(momentum,av18_lambdas(:,1:n_av18_operators),radii,V_poly,Vq)
             write(unit,'(25e21.8)') momentum, V_poly
             write(unit_st,'(25e21.8)') momentum, Vq
             momentum = momentum + 1.e-1_dp
@@ -195,6 +197,6 @@ subroutine write_av18_momentum(delta_r,r_max)
     close(unit_st)
 
     
-end subroutine write_av18_momentum
+end subroutine write_local_2_momentum
 
 end module c2m_io

@@ -2,11 +2,13 @@ module c2m_transform
 use types, only: dp
 use special, only: spherical_bessel_jn
 use constants, only: pi
-use av18, only: av18_oper_basis, n_operators
+use av18, only: av18_oper_basis, n_av18_operators => n_operators
+use sog_potential, only: sog_potential_oper_basis, n_sog_operators => n_operators
 use pion_exchange, only: v_one_pion_exch, v_two_pion_exch_nlo, v_two_pion_exch_n2lo
 implicit none
 private
-public delta_shell_2_momentum,sample_av18,transform_all_oper,n_q_operators,n_operators,sample_pion_tail,n_av18q_operators
+public delta_shell_2_momentum,sample_local_potential,transform_all_oper,n_q_operators,n_av18_operators,&
+    &sample_pion_tail,n_av18q_operators
 
 integer, parameter :: n_q_operators = 12
 integer, parameter :: n_av18q_operators = 24
@@ -137,32 +139,51 @@ subroutine av18_momentum_2_spin_isospin(p,q,q_dot_p,V18q,Vstq)
     
 end subroutine av18_momentum_2_spin_isospin
 
-subroutine sample_av18(delta_r,r_max,radii,av18_lambdas)
+subroutine sample_local_potential(delta_r,r_max,radii,potenial_name,lambdas)
     implicit none
     real(dp), intent(in) :: delta_r,r_max
-    real(dp), intent(out), allocatable :: radii(:),av18_lambdas(:,:)
-    integer :: n_lambdas, i
-    real(dp) :: v_oper(1:n_operators), r_i
-    real(dp), allocatable :: temp_array(:,:)
+    character(len=*), intent(in) :: potenial_name
+    real(dp), intent(out), allocatable :: radii(:), lambdas(:,:)
+    integer :: n_lambdas, i, n_v_operators
+    real(dp) :: r_i
+    real(dp), allocatable :: v_oper(:), temp_array(:,:)
+    procedure() :: local_potential_oper_basis
 
     n_lambdas = int(r_max/delta_r)
+
+    select case(trim(potenial_name))
+    case('av8')
+        n_v_operators = n_av18_operators
+    case('sog_ope')
+        n_v_operators = n_sog_operators
+    case default
+        print*, 'unrecognized potenial name "', trim(potenial_name), '" in sample_local_potential'
+        stop
+    end select
+
     if(allocated(radii)) deallocate(radii) 
-    if(allocated(av18_lambdas)) deallocate(av18_lambdas)
+    if(allocated(lambdas)) deallocate(lambdas)
 
     allocate(radii(1:n_lambdas))
-    allocate(av18_lambdas(1:n_lambdas,1:n_operators))
-    allocate(temp_array(1:n_operators,n_lambdas))
+    allocate(v_oper(1:n_v_operators))
+    allocate(lambdas(1:n_lambdas,1:n_v_operators))
+    allocate(temp_array(1:n_v_operators,n_lambdas))
 
     radii = [((i-0.5_dp)*delta_r,i=1,n_lambdas)]
 
     do i=1,n_lambdas
         r_i = radii(i)
-        call av18_oper_basis(r_i,v_oper)
+        select case(trim(potenial_name))
+        case('av8')
+            call av18_oper_basis(r_i,v_oper)
+        case('sog_ope')
+            call sog_potential_oper_basis(r_i,v_oper)
+        end select
         temp_array(:,i) = v_oper
     enddo
     temp_array = temp_array*delta_r
-    av18_lambdas = transpose(temp_array)
-end subroutine sample_av18
+    lambdas = transpose(temp_array)
+end subroutine sample_local_potential
 
 subroutine sample_pion_tail(radii,lecs,chiral_order,tail)
     implicit none
@@ -172,7 +193,7 @@ subroutine sample_pion_tail(radii,lecs,chiral_order,tail)
 
     integer :: tail_shape(1:2),i,n_lambdas
     real(dp), allocatable :: temp_array(:,:)
-    real(dp) :: v_ope(1:n_operators), v_tpe_nlo(1:n_operators), v_tpe_n2lo(1:n_operators)
+    real(dp) :: v_ope(1:n_av18_operators), v_tpe_nlo(1:n_av18_operators), v_tpe_n2lo(1:n_av18_operators)
     real(dp) :: r_i, delta_r
 
     tail_shape = shape(tail)
@@ -183,7 +204,7 @@ subroutine sample_pion_tail(radii,lecs,chiral_order,tail)
         stop
     endif
 
-    if (tail_shape(2).ne.n_operators) then
+    if (tail_shape(2).ne.n_av18_operators) then
         print*, 'incorrect size for tail in sample_pion_tail'
         stop
     endif

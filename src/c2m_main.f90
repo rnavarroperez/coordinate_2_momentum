@@ -1,7 +1,7 @@
 program coordinate_2_momentum    
 
 use types, only: dp
-use c2m_io, only: read_parameters, read_mc_samples, write_momentum_dependence, write_av18_momentum
+use c2m_io, only: read_parameters, read_mc_samples, write_momentum_dependence, write_local_2_momentum
 use c2m_basis, only: set_fit_flags
 
 implicit none
@@ -25,6 +25,7 @@ call set_fit_flags(pw_parameters,fit_flags)
 call read_mc_samples(pw_parameters,fit_flags,pw_samples)
 call write_momentum_dependence(pw_samples,delta_r_ds,delta_r_tail,r_max,chiral_order)
 
-call write_av18_momentum(delta_r_tail,r_max)
+call write_local_2_momentum(delta_r_tail,r_max,'av18')
+call write_local_2_momentum(delta_r_tail,r_max,'sog_ope')
     
 end program coordinate_2_momentum

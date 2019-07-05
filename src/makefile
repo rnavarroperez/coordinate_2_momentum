@@ -34,7 +34,7 @@ sog_potential.o: sog_potential.f90 types.o constants.o
 pion_exchange.o: pion_exchange.f90 types.o constants.o special.o av18.o
 	$(COMPILER) $(FLAGS) -c $<
 
-c2m_transform.o: c2m_transform.f90 types.o special.o constants.o av18.o pion_exchange.o
+c2m_transform.o: c2m_transform.f90 types.o special.o constants.o av18.o pion_exchange.o sog_potential.o
 	$(COMPILER) $(FLAGS) -c $<
 
 c2m_basis.o: c2m_basis.f90 types.o constants.o

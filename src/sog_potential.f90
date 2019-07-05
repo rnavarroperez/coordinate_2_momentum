@@ -55,8 +55,8 @@ subroutine sog_potential_oper_basis(r,v_operators)
         v_operators = 0._dp
         do i=1,n_gaussians
             gaussian = exp(-0.5_dp*((i+1)*r/range)**2)
+            v_operators = v_operators + potential_parameters(:,i)*gaussian
         enddo
-        v_operators = v_operators + potential_parameters(:,i)*gaussian
     else
         call ope_tail(r,v_operators)
     endif

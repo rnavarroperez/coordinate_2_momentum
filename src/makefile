@@ -28,6 +28,9 @@ special.o: special.f90 types.o
 av18.o: av18.f90 types.o constants.o
 	$(COMPILER) $(FLAGS) -c $<
 
+sog_potential.o: sog_potential.f90 types.o constants.o
+	$(COMPILER) $(FLAGS) -c $<
+
 pion_exchange.o: pion_exchange.f90 types.o constants.o special.o av18.o
 	$(COMPILER) $(FLAGS) -c $<
 

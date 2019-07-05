@@ -152,7 +152,7 @@ subroutine sample_local_potential(delta_r,r_max,radii,potenial_name,lambdas)
     n_lambdas = int(r_max/delta_r)
 
     select case(trim(potenial_name))
-    case('av8')
+    case('av18')
         n_v_operators = n_av18_operators
     case('sog_ope')
         n_v_operators = n_sog_operators
@@ -174,7 +174,7 @@ subroutine sample_local_potential(delta_r,r_max,radii,potenial_name,lambdas)
     do i=1,n_lambdas
         r_i = radii(i)
         select case(trim(potenial_name))
-        case('av8')
+        case('av18')
             call av18_oper_basis(r_i,v_oper)
         case('sog_ope')
             call sog_potential_oper_basis(r_i,v_oper)

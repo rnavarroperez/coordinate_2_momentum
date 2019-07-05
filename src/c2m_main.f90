@@ -16,12 +16,14 @@ real(dp), parameter :: delta_r_ds = 0.6_dp !in fm
 real(dp), parameter :: delta_r_tail = 1.0e-2_dp !in fm
 real(dp), parameter :: r_max = 20.0_dp !in fm
 
+integer, parameter :: chiral_order = 2
+
 logical :: fit_flags(1:n_lambdas,1:n_waves)
 
 call read_parameters(pw_parameters)
 call set_fit_flags(pw_parameters,fit_flags)
 call read_mc_samples(pw_parameters,fit_flags,pw_samples)
-call write_momentum_dependence(pw_samples,delta_r_ds,delta_r_tail,r_max)
+call write_momentum_dependence(pw_samples,delta_r_ds,delta_r_tail,r_max,chiral_order)
 
 call write_av18_momentum(delta_r_tail,r_max)
     

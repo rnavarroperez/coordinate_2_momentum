@@ -10,10 +10,12 @@ public mc_momentum_dependence
 
 contains
 
-subroutine mc_momentum_dependence(param_samples,momentum,dr,dr_tail,r_max,V_mean_poly,V_mean_st,V_variance_poly,V_variance_st)
+subroutine mc_momentum_dependence(param_samples,momentum,dr,dr_tail,r_max,chiral_order,V_mean_poly,V_mean_st,&
+    & V_variance_poly,V_variance_st)
     implicit none
     real(dp), intent(in) :: param_samples(:,:,:)
     real(dp), intent(in) :: momentum, dr,dr_tail,r_max
+    integer, intent(in) :: chiral_order
     real(dp), intent(out) :: V_mean_st(:), V_mean_poly(:), V_variance_st(:), V_variance_poly(:)
 
     integer, parameter :: n_lecs=3
@@ -50,7 +52,7 @@ subroutine mc_momentum_dependence(param_samples,momentum,dr,dr_tail,r_max,V_mean
     allocate(tail_oper_basis(1:n_tail,1:n_av18_operators))
     
 !$OMP parallel default(none) &
-!$OMP& shared(n_samples,param_samples,momentum,radii,temp_array,temp_array_poly,r_tail)&
+!$OMP& shared(n_samples,param_samples,momentum,radii,temp_array,temp_array_poly,r_tail,chiral_order)&
 !$OMP& private(i,oper_parameters,pw_parameters,lecs,V_poly,V_momentum,tail_oper_basis)
 !$OMP do schedule(dynamic)
     do i=1,n_samples
@@ -61,7 +63,7 @@ subroutine mc_momentum_dependence(param_samples,momentum,dr,dr_tail,r_max,V_mean
         call transform_all_oper(momentum,oper_parameters(:,1:n_av18_operators),radii,V_poly,V_momentum)
         temp_array(:,i) = V_momentum
         temp_array_poly(:,i) = V_poly
-        call sample_pion_tail(r_tail,lecs,tail_oper_basis)
+        call sample_pion_tail(r_tail,lecs,chiral_order,tail_oper_basis)
         call transform_all_oper(momentum,tail_oper_basis,r_tail,V_poly,V_momentum)
         temp_array(:,i) = temp_array(:,i) + V_momentum 
         temp_array_poly(:,i) = temp_array_poly(:,i) + V_poly

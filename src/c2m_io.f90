@@ -119,9 +119,10 @@ subroutine read_parameters(param)
 
 end subroutine read_parameters
 
-subroutine write_momentum_dependence(param_samples,dr,dr_tail,r_max)
+subroutine write_momentum_dependence(param_samples,dr,dr_tail,r_max,chiral_order)
     implicit none
     real(dp), intent(in) :: param_samples(:,:,:), dr, dr_tail,r_max
+    integer, intent(in) :: chiral_order
     integer :: unit_st,ierr_st, unit_poly,ierr_poly
     character(len=128) :: filename, filename_poly
     real(dp) :: momentum, V_mean_st(1:n_q_operators),V_variance_st(1:n_q_operators)
@@ -136,8 +137,8 @@ subroutine write_momentum_dependence(param_samples,dr,dr_tail,r_max)
     if (ierr_st .eq. 0 .and. ierr_poly .eq. 0) then
         momentum = 1.e-1_dp
         do
-            call  mc_momentum_dependence(param_samples,momentum,dr,dr_tail,r_max,V_mean_poly,V_mean_st,&
-                & V_variance_poly,V_variance_st)
+            call  mc_momentum_dependence(param_samples,momentum,dr,dr_tail,r_max,chiral_order,&
+                & V_mean_poly,V_mean_st, V_variance_poly,V_variance_st)
             write(unit_st,'(49e21.8)') momentum, (V_mean_st(i), V_variance_st(i),i=1,n_q_operators)
             write(unit_poly,'(49e21.8)') momentum, (V_mean_poly(i), V_variance_poly(i),i=1,n_av18q_operators)
             momentum = momentum + 1.e-1_dp

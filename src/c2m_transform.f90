@@ -164,9 +164,10 @@ subroutine sample_av18(delta_r,r_max,radii,av18_lambdas)
     av18_lambdas = transpose(temp_array)
 end subroutine sample_av18
 
-subroutine sample_pion_tail(radii,lecs,tail)
+subroutine sample_pion_tail(radii,lecs,chiral_order,tail)
     implicit none
     real(dp), intent(in) :: radii(:),lecs(:)
+    integer, intent(in) :: chiral_order
     real(dp), intent(out) :: tail(:,:)
 
     integer :: tail_shape(1:2),i,n_lambdas
@@ -190,9 +191,21 @@ subroutine sample_pion_tail(radii,lecs,tail)
     n_lambdas = tail_shape(1)
     do i=1,n_lambdas
         r_i = radii(i)
-        call v_one_pion_exch(r_i,v_ope)
-        call v_two_pion_exch_nlo(r_i,v_tpe_nlo)
-        call v_two_pion_exch_n2lo(r_i,lecs,v_tpe_n2lo)
+        if(chiral_order .ge. 0) then
+            call v_one_pion_exch(r_i,v_ope)
+        else
+            v_ope = 0._dp
+        endif
+        if (chiral_order .ge. 1) then
+            call v_two_pion_exch_nlo(r_i,v_tpe_nlo)
+        else
+            v_tpe_nlo = 0._dp
+        endif
+        if (chiral_order .ge. 2) then
+            call v_two_pion_exch_n2lo(r_i,lecs,v_tpe_n2lo)
+        else
+            v_tpe_n2lo = 0._dp
+        endif
         temp_array(:,i) = v_ope + v_tpe_nlo + v_tpe_n2lo
     enddo
     delta_r = radii(2) - radii(1)

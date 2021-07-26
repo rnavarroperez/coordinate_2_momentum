@@ -11,6 +11,7 @@ private
 public :: read_parameters, write_momentum_dependence, read_mc_samples, write_local_2_momentum
 
 character(len=25), parameter :: f_name = 'tpe218pwanew.dat' !< file nane subfix
+! character(len=25), parameter :: f_name = 'ope30.dat' !< file nane subfix
 
 contains
 
